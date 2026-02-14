@@ -62,42 +62,50 @@ Pastikan sistem Anda telah menginstall:
 
 ## 🚀 Instalasi & Menjalankan Proyek
 
-### 1. Clone Repository
+### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/username/STIS-Explore.git
-cd STIS-Explore
+git clone https://github.com/username/stismap.git
+cd stismap
 ```
 
-### 2. Install Dependencies
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-atau jika menggunakan pnpm:
+<details>
+<summary>Atau gunakan package manager lain</summary>
 
+**Menggunakan pnpm:**
 ```bash
 pnpm install
 ```
 
-### 3. Jalankan Development Server
+**Menggunakan yarn:**
+```bash
+yarn install
+```
+</details>
+
+### 3️⃣ Jalankan Development Server
 
 ```bash
 npm run dev
 ```
 
-Aplikasi akan berjalan di `http://localhost:5173` (atau port lain yang tersedia).
+Aplikasi akan berjalan di **`http://localhost:5173`** (atau port lain jika 5173 sedang digunakan).
 
-### 4. Build untuk Production
+### 4️⃣ Build untuk Production
 
 ```bash
 npm run build
 ```
 
-File hasil build akan berada di folder `dist/`.
+File hasil build akan tersimpan di folder `dist/`.
 
-### 5. Preview Production Build
+### 5️⃣ Preview Production Build
 
 ```bash
 npm run preview
@@ -122,115 +130,219 @@ npm run preview
 ## 📁 Struktur Proyek
 
 ```
-STIS-Explore/
-├── public/                 # Static assets
+stismap/
+├── public/                    # Static assets
+│   ├── logo.png              # Logo game
+│   ├── logostis.png          # Logo STIS
+│   └── stis.png              # Logo alternatif
+│
 ├── src/
-│   ├── assets/            # Asset gambar dan resource
-│   │   └── player/        # Sprite karakter player
-│   ├── components/        # Vue components
-│   │   ├── DialogBox.vue  # Komponen dialog NPC
-│   │   ├── ProfileModal.vue   # Modal profil
-│   │   ├── ProjectModal.vue   # Modal proyek
-│   │   ├── SkillModal.vue     # Modal skill
-│   │   ├── RpgText.vue        # Text komponen RPG-style
-│   │   └── rpg-style.css      # Global RPG styling
-│   ├── game/              # Phaser game logic
-│   │   ├── Game.ts        # Konfigurasi game utama
-│   │   ├── main.ts        # Entry point game
-│   │   ├── scenes/        # Game scenes
-│   │   │   └── BootScene.ts   # Scene utama
-│   │   └── objects/       # Game objects
-│   │       └── NPC.ts     # Class untuk NPC
-│   ├── stores/            # Pinia stores
-│   │   ├── dialogStore.ts     # State dialog
-│   │   └── uiStore.ts         # State UI
-│   ├── views/             # Vue views/pages
-│   │   └── GameView.vue   # View utama game
-│   ├── App.vue            # Root component
-│   ├── main.ts            # Entry point aplikasi
-│   └── style.css          # Global styles
-├── CARA_MEMBUAT_MAP.md    # Panduan membuat map custom
-├── index.html             # HTML entry point
-├── package.json           # Dependencies dan scripts
-├── tsconfig.json          # TypeScript configuration
-├── vite.config.ts         # Vite configuration
-└── README.md              # Dokumentasi proyek
+│   ├── assets/               # Game assets & resources
+│   │   ├── maps/            
+│   │   │   └── kampus.json   # Tilemap data dari Tiled
+│   │   ├── player/
+│   │   │   └── chibi-layered.png  # Player sprite sheet
+│   │   └── tilesets/
+│   │       └── tileset_kampus.png # Tileset image
+│   │
+│   ├── components/           # Vue components
+│   │   ├── DialogBox.vue     # Komponen dialog NPC
+│   │   ├── ProfileModal.vue  # Modal profil
+│   │   ├── ProjectModal.vue  # Modal proyek
+│   │   ├── SkillModal.vue    # Modal skill
+│   │   ├── RpgText.vue       # Text komponen RPG-style
+│   │   └── rpg-style.css     # Global RPG styling
+│   │
+│   ├── game/                 # Phaser game logic
+│   │   ├── Game.ts           # Konfigurasi game utama
+│   │   ├── main.ts           # Entry point game
+│   │   ├── scenes/
+│   │   │   └── BootScene.ts  # Scene utama game
+│   │   └── objects/
+│   │       └── NPC.ts        # Class untuk NPC
+│   │
+│   ├── stores/               # Pinia state management
+│   │   ├── dialogStore.ts    # State dialog system
+│   │   └── uiStore.ts        # State UI components
+│   │
+│   ├── views/                # Vue views/pages
+│   │   └── GameView.vue      # View utama game
+│   │
+│   ├── App.vue               # Root Vue component
+│   ├── main.ts               # Entry point aplikasi
+│   └── style.css             # Global styles
+│
+├── .gitignore                # Git ignore rules
+├── CARA_MEMBUAT_MAP.md       # 📘 Panduan membuat map custom
+├── index.html                # HTML entry point
+├── package.json              # NPM dependencies & scripts
+├── README.md                 # 📖 Dokumentasi proyek (file ini)
+├── tsconfig.json             # TypeScript configuration
+├── vite.config.ts            # Vite build configuration
+└── LICENSE                   # MIT License
 ```
 
-## 🎨 Customization
+## 🎨 Customization & Development
 
-### Menambah NPC Baru
+### 🗺️ Membuat Map Sendiri  
 
-Edit file `src/game/scenes/BootScene.ts`:
+Gunakan **Tiled Map Editor** untuk membuat custom map:
+
+1. Download [Tiled Map Editor](https://www.mapeditor.org/)
+2. Ikuti panduan lengkap di **[CARA_MEMBUAT_MAP.md](CARA_MEMBUAT_MAP.md)**
+3. Export sebagai JSON dan simpan di `src/assets/maps/`
+4. Update reference di `BootScene.ts`
+
+### 👥 Menambah NPC Baru
+
+Edit `src/game/scenes/BootScene.ts` dalam method `createNPCs()`:
 
 ```typescript
-this.createNPC(x, y, 'Nama NPC', [
-  'Dialog line 1',
-  'Dialog line 2',
-  'Dialog line 3'
-])
+const npc = new NPC({
+  scene: this,
+  x: 720,
+  y: 720,
+  texture: 'player',
+  name: 'Nama NPC',
+  dialog: [
+    'Dialog baris pertama',
+    'Dialog baris kedua',
+    'Dialog baris ketiga'
+  ]
+})
+npc.setFrame(12) // Set frame sprite berbeda
+this.npcs.add(npc)
 ```
 
-### Membuat Map Sendiri
+### 🎭 Mengubah Sprite Karakter
 
-Ikuti panduan lengkap di [CARA_MEMBUAT_MAP.md](CARA_MEMBUAT_MAP.md) untuk membuat custom map menggunakan Tiled Map Editor.
+1. **Siapkan sprite sheet** dengan spesifikasi:
+   - Dimensi per frame: **16x16 pixel**
+   - Format: PNG dengan transparency
+   - Layout: Grid horizontal atau vertikal
 
-### Mengubah Sprite Karakter
+2. **Ganti file** di `src/assets/player/chibi-layered.png`
 
-1. Siapkan sprite sheet dengan dimensi 16x16 pixel per frame
-2. Ganti file di `src/assets/player/`
-3. Update path di `BootScene.ts`
+3. **Update konfigurasi** di `BootScene.ts`:
+```typescript
+this.load.spritesheet('player', 'src/assets/player/YOUR_SPRITE.png', {
+  frameWidth: 16,
+  frameHeight: 16
+})
+```
+
+### 🎨 Mengubah Tileset
+
+1. **Buat tileset image** sesuai spesifikasi kampus.json:
+   - Tile size: **32x32 pixel**
+   - Format: PNG
+   - Susunan: Horizontal strip (1 row, multiple columns)
+
+2. **Simpan** di `src/assets/tilesets/tileset_kampus.png`
+
+3. Tileset akan otomatis terbaca oleh game engine
 
 ## 🤝 Contributing
 
-Kontribusi sangat diterima! Jika Anda ingin berkontribusi:
+Kontribusi dari komunitas sangat kami apresiasi! Berikut cara berkontribusi:
 
-1. Fork repository ini
-2. Buat branch fitur baru (`git checkout -b feature/AmazingFeature`)
-3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
-4. Push ke branch (`git push origin feature/AmazingFeature`)
-5. Buat Pull Request
+### How to Contribute
 
-## 📝 Development Roadmap
+1. **Fork** repository ini
+2. **Create branch** untuk fitur baru
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. **Commit** perubahan Anda
+   ```bash
+   git commit -m 'Add: Amazing new feature'
+   ```
+4. **Push** ke branch
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. **Open Pull Request** dengan deskripsi lengkap
 
-- [ ] Tambah lebih banyak lokasi kampus
-- [ ] Implementasi sistem mini-map
-- [ ] Tambah sound effects dan background music
-- [ ] Sistem inventory untuk item collection
-- [ ] Mobile touch controls
-- [ ] Multiplayer support
-- [ ] Save/Load game state
-- [ ] Quest system
+### Contribution Guidelines
 
-## 🐛 Known Issues
+- 📝 Tulis kode yang clean dan readable
+- ✅ Test fitur sebelum submit PR
+- 📖 Update dokumentasi jika diperlukan
+- 🎨 Follow existing code style
+- 💬 Beri deskripsi jelas pada commit message
 
-- Collision detection perlu optimasi lebih lanjut
-- Performance issue pada map yang sangat besar
-- Mobile responsiveness masih dalam pengembangan
+## �️ Development Roadmap
+
+### 🚀 Planned Features
+
+- [ ] **Expanded Map** - Tambah lebih banyak lokasi kampus (ruang kelas, lab, kantin, dll)
+- [ ] **Mini-Map System** - Navigasi lebih mudah dengan mini-map di pojok layar
+- [ ] **Audio System** - Sound effects dan background music
+- [ ] **Inventory System** - Koleksi item dan achievement
+- [ ] **Mobile Support** - Touch controls untuk perangkat mobile
+- [ ] **Save/Load System** - Simpan progress game
+- [ ] **Quest System** - Misi dan quest untuk eksplorasi
+- [ ] **Multiplayer** - Real-time multiplayer support
+
+### 🔧 Technical Improvements
+
+- [ ] Performance optimization untuk map besar
+- [ ] Better collision detection algorithm
+- [ ] Improved mobile responsiveness
+- [ ] Loading screen dengan progress bar
+- [ ] Better error handling
+
+## ⚠️ Known Issues
+
+| Issue | Severity | Status |
+|-------|----------|--------|
+| Collision detection perlu optimasi | Medium | 🔄 In Progress |
+| Performance drop pada map >100x100 tiles | Low | 📋 Planned |
+| Mobile touch controls belum tersedia | Medium | 📋 Planned |
+| Audio autoplay blocked di beberapa browser | Low | 🐛 Known |
 
 ## 📄 License
 
-Proyek ini bersifat open source dan tersedia di bawah [MIT License](LICENSE).
+Proyek ini bersifat **open source** dan tersedia di bawah [MIT License](LICENSE).
 
-## 👨‍💻 Author
+```
+MIT License - Bebas digunakan untuk keperluan personal maupun komersial
+```
+
+## 👨‍💻 Author & Contributors
 
 **STIS Development Team**
 
-Dibuat dengan ❤️ untuk Politeknik Statistika STIS
+Dibuat dengan ❤️ untuk **Politeknik Statistika STIS**
+
+### Contributors
+
+Terima kasih kepada semua kontributor yang telah membantu proyek ini! 🙏
 
 ## 🙏 Acknowledgments
 
-- [Phaser](https://phaser.io/) - Game engine luar biasa
-- [Vue.js](https://vuejs.org/) - Framework yang powerful
-- [Kenney.nl](https://kenney.nl/) - Free game assets
-- Komunitas open source yang selalu supportive!
+Special thanks to:
+
+- **[Phaser.io](https://phaser.io/)** - Game engine HTML5 yang powerful
+- **[Vue.js Team](https://vuejs.org/)** - Framework JavaScript yang amazing
+- **[Tiled Map Editor](https://www.mapeditor.org/)** - Tool untuk membuat tilemap
+- **[Kenney.nl](https://kenney.nl/)** - Free game assets berkualitas tinggi
+- **Open Source Community** - Yang selalu supportive dan inspiring
+
+## 📞 Contact & Support
+
+- 📧 Email: dev@stis.ac.id
+- 🌐 Website: [https://stis.ac.id](https://stis.ac.id)
+- 💬 Issues: [GitHub Issues](https://github.com/username/stismap/issues)
 
 ---
 
 <div align="center">
 
-**⭐ Jika proyek ini bermanfaat, jangan lupa berikan star! ⭐**
+### ⭐ Jika proyek ini bermanfaat, jangan lupa berikan star! ⭐
 
-Made with 💻 and ☕ in Indonesia
+**Made with 💻 and ☕ in Indonesia**
+
+© 2026 Politeknik Statistika STIS. All rights reserved.
 
 </div>
