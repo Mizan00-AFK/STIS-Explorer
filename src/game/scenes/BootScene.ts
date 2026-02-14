@@ -10,40 +10,150 @@ export default class BootScene extends Phaser.Scene {
   private interactKey!: Phaser.Input.Keyboard.Key
   private nearbyNPC: NPC | null = null
   private interactText!: Phaser.GameObjects.Text
+  private useTilemap: boolean = false
 
   constructor() {
     super('BootScene')
   }
 
   preload() {
-    // LOAD SPRITE SHEET
+    // LOAD ASSETS ONLY - don't create game objects here!
+    console.log('🔄 Preload started...')
+    
+    // Error handler for missing assets
+    this.load.on('loaderror', (file: any) => {
+      console.error('❌ Failed to load:', file.key, file.src)
+      if (file.key === 'tiles' || file.key === 'kampus') {
+        this.useTilemap = false
+      }
+    })
+    
+    // Success handler
+    this.load.on('filecomplete', (key: string) => {
+      console.log('✅ Loaded:', key)
+    })
+
+    // LOAD TILESET IMAGE
+    this.load.image('tiles', 'src/assets/tilesets/tileset_kampus.png')
+    
+    // LOAD TILEMAP JSON
+    this.load.tilemapTiledJSON('kampus', 'src/assets/maps/kampus.json')
+    
+    // LOAD PLAYER SPRITE
     this.load.spritesheet('player', 'src/assets/player/chibi-layered.png', {
       frameWidth: 16,
       frameHeight: 16
     })
+    
+    console.log('🔄 All assets queued for loading')
   }
 
   create() {
-    // WORLD
-    this.cameras.main.setBounds(0, 0, 2000, 2000)
-    this.physics.world.setBounds(0, 0, 2000, 2000)
+    console.log('🎮 BootScene.create() started')
+    
+    // Check if we can use tilemap
+    const hasKampusMap = this.cache.tilemap.exists('kampus')
+    const hasTiles = this.textures.exists('tiles')
+    
+    console.log('Cache check - hasKampusMap:', hasKampusMap, 'hasTiles:', hasTiles)
+    
+    let collisionLayer: Phaser.Tilemaps.TilemapLayer | null = null
 
-    // BACKGROUND - Grass
-    this.add.rectangle(0, 0, 2000, 2000, 0x4a7c59).setOrigin(0)
+    if (hasKampusMap && hasTiles) {
+      console.log('Attempting to create tilemap...')
+      
+      // CREATE TILEMAP FROM JSON
+      const map = this.make.tilemap({ key: 'kampus' })
+      console.log('Tilemap created:', map)
+      
+      // ADD TILESET TO MAP
+      const tileset = map.addTilesetImage('tileset_kampus', 'tiles')
+      console.log('Tileset added:', tileset)
+      
+      if (tileset) {
+        this.useTilemap = true
+        console.log('✅ Using tilemap from kampus.json')
+        
+        // CREATE LAYERS
+        const groundLayer = map.createLayer('Ground', tileset, 0, 0)
+        const roadsLayer = map.createLayer('Roads', tileset, 0, 0)
+        const buildingsLayer = map.createLayer('Buildings', tileset, 0, 0)
+        collisionLayer = map.createLayer('Collision', tileset, 0, 0)
+        const overlayLayer = map.createLayer('Overlay', tileset, 0, 0)
+        
+        console.log('Layers created:', { groundLayer, roadsLayer, buildingsLayer, collisionLayer, overlayLayer })
+        
+        // SET LAYER DEPTHS
+        if (groundLayer) groundLayer.setDepth(0)
+        if (roadsLayer) roadsLayer.setDepth(1)
+        if (buildingsLayer) buildingsLayer.setDepth(2)
+        if (overlayLayer) overlayLayer.setDepth(3)
+        if (collisionLayer) collisionLayer.setDepth(4)
+        
+        // SET COLLISION ON COLLISION LAYER
+        if (collisionLayer) {
+          try {
+            // Set collision on tile ID 5 (wall/collision tiles in Collision layer)
+            collisionLayer.setCollision([5])
+            collisionLayer.setVisible(false)
+            console.log('✅ Collision layer configured')
+          } catch (error) {
+            console.warn('⚠️ Could not set collision on layer:', error)
+          }
+        }
+        
+        // UPDATE WORLD BOUNDS BASED ON MAP SIZE
+        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        
+        console.log('✅ Map size:', map.widthInPixels, 'x', map.heightInPixels)
+      }
+    }
+    
+    // FALLBACK: Use colored rectangles if tilemap failed
+    if (!this.useTilemap) {
+      console.warn('⚠️ Tilemap not available, using fallback graphics')
+      this.cameras.main.setBounds(0, 0, 2000, 2000)
+      this.physics.world.setBounds(0, 0, 2000, 2000)
+      
+      // BACKGROUND - Grass
+      this.add.rectangle(0, 0, 2000, 2000, 0x4a7c59).setOrigin(0)
+      
+      // CREATE MAP - Kampus Sederhana
+      this.createCampusMap()
+    }
 
-    // CREATE MAP - Kampus Sederhana
-    this.createCampusMap()
-
-    // CREATE BUILDINGS GROUP
+    // CREATE BUILDINGS GROUP (for any additional physics objects)
     this.buildings = this.physics.add.staticGroup()
 
     // CREATE NPCs GROUP
     this.npcs = this.add.group()
 
     // PLAYER
-    this.player = this.physics.add.sprite(400, 300, 'player', 0)
+    console.log('Creating player sprite...')
+    console.log('Player texture exists?', this.textures.exists('player'))
+    
+    if (!this.textures.exists('player')) {
+      console.error('❌ Player texture not loaded!')
+      return
+    }
+    
+    this.player = this.physics.add.sprite(800, 800, 'player', 0)
     this.player.setCollideWorldBounds(true)
     this.player.setDepth(10)
+    
+    console.log('✅ Player created at:', this.player.x, this.player.y)
+    
+    // ADD COLLISION BETWEEN PLAYER AND COLLISION LAYER (if tilemap is used)
+    if (collisionLayer && this.useTilemap) {
+      this.physics.add.collider(this.player, collisionLayer)
+      console.log('Player collision with tilemap layer added')
+    }
+    
+    // ADD COLLISION WITH BUILDINGS (if fallback is used)
+    if (!this.useTilemap) {
+      this.physics.add.collider(this.player, this.buildings)
+    }
 
     // CAMERA FOLLOW
     this.cameras.main.startFollow(this.player)
@@ -55,6 +165,13 @@ export default class BootScene extends Phaser.Scene {
     this.interactKey = this.input.keyboard!.addKey('E')
 
     // ANIMASI (KOLOM PERTAMA: 9 FRAME)
+    console.log('Creating animations...')
+    
+    if (!this.textures.exists('player')) {
+      console.error('❌ Cannot create animations - player texture missing!')
+      return
+    }
+    
     this.anims.create({
       key: 'walk-down',
       frames: this.anims.generateFrameNumbers('player', { start: 0, end: 6, first: 0 }),
@@ -82,15 +199,16 @@ export default class BootScene extends Phaser.Scene {
       frameRate: 8,
       repeat: -1
     })
+    
+    console.log('✅ Animations created')
 
-    // CREATE BUILDINGS
-    this.createBuildings()
+    // CREATE BUILDINGS (only if fallback mode)
+    if (!this.useTilemap) {
+      this.createBuildings()
+    }
 
     // CREATE NPCs
     this.createNPCs()
-
-    // COLLISION
-    this.physics.add.collider(this.player, this.buildings)
 
     // UI TEXT
     this.add.text(20, 20, 'MOVE: WASD / ARROW | INTERACT: E', {
@@ -115,6 +233,8 @@ export default class BootScene extends Phaser.Scene {
         this.showNPCDialog(this.nearbyNPC)
       }
     })
+    
+    console.log('🎮 BootScene.create() completed, useTilemap:', this.useTilemap)
   }
 
   private createCampusMap() {
@@ -183,11 +303,22 @@ export default class BootScene extends Phaser.Scene {
   }
 
   private createNPCs() {
+    // NPC positions for tilemap (adjusted for 1600x1600 map)
+    const npcPositions = this.useTilemap ? {
+      npc1: { x: 720, y: 720 },
+      npc2: { x: 880, y: 720 },
+      npc3: { x: 800, y: 880 }
+    } : {
+      npc1: { x: 450, y: 550 },
+      npc2: { x: 800, y: 550 },
+      npc3: { x: 350, y: 700 }
+    }
+
     // NPC 1 - Rektor
     const npc1 = new NPC({
       scene: this,
-      x: 450,
-      y: 550,
+      x: npcPositions.npc1.x,
+      y: npcPositions.npc1.y,
       texture: 'player',
       name: 'Prof. Dr. Budi',
       dialog: [
@@ -203,8 +334,8 @@ export default class BootScene extends Phaser.Scene {
     // NPC 2 - Dosen
     const npc2 = new NPC({
       scene: this,
-      x: 800,
-      y: 550,
+      x: npcPositions.npc2.x,
+      y: npcPositions.npc2.y,
       texture: 'player',
       name: 'Dr. Siti',
       dialog: [
@@ -220,8 +351,8 @@ export default class BootScene extends Phaser.Scene {
     // NPC 3 - Pustakawan
     const npc3 = new NPC({
       scene: this,
-      x: 350,
-      y: 700,
+      x: npcPositions.npc3.x,
+      y: npcPositions.npc3.y,
       texture: 'player',
       name: 'Ibu Ani',
       dialog: [
