@@ -2,6 +2,11 @@
 
 <div align="center">
 
+<img src="public/logostis.png" alt="STIS Logo" width="200"/>
+
+<br/>
+<br/>
+
 **Peta Interaktif Kampus STIS dalam Bentuk RPG 2D**
 
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=flat&logo=vue.js&logoColor=white)](https://vuejs.org/)
@@ -18,6 +23,13 @@
 STIS-Explore adalah aplikasi web interaktif berbasis game RPG 2D yang menampilkan peta kampus STIS (Sekolah Tinggi Ilmu Statistik). Pengunjung dapat menjelajahi kampus secara virtual, berinteraksi dengan NPC, dan mendapatkan informasi melalui dialog bergaya retro-RPG.
 
 Proyek ini menggabungkan teknologi modern web development dengan estetika pixel art klasik, menciptakan pengalaman yang unik dan engaging untuk mengenal kampus STIS.
+
+## 🖼️ Preview
+
+<div align="center">
+  <img src="public/logo.png" alt="STIS-Explore Game Preview" width="600"/>
+  <p><em>Jelajahi kampus STIS dalam dunia pixel art!</em></p>
+</div>
 
 ## ✨ Fitur Utama
 
