@@ -311,7 +311,7 @@ MIT License - Bebas digunakan untuk keperluan personal maupun komersial
 
 ## 👨‍💻 Author & Contributors
 
-**STIS Development Team**
+**Ananda Mizan Ali**
 
 Dibuat dengan ❤️ untuk **Politeknik Statistika STIS**
 
