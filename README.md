@@ -33,9 +33,9 @@ Proyek ini menggabungkan teknologi modern web development dengan estetika pixel 
 
 ## ✨ Fitur Utama
 
-- 🎮 **Kontrol Karakter Real-time** - Gerakkan karakter menggunakan keyboard (WASD/Arrow Keys)
+- 🎮 **Kontrol Karakter Real-time** - Menggerakkan karakter menggunakan keyboard (WASD/Arrow Keys)
 - 💬 **Sistem Dialog NPC** - Berinteraksi dengan NPC untuk mendapatkan informasi
-- 🗺️ **Peta Kampus Interaktif** - Jelajahi berbagai lokasi di kampus STIS
+- 🗺️ **Peta Kampus Interaktif** - Menjelajahi berbagai lokasi di kampus STIS
 - 🎨 **Pixel Art Aesthetic** - Gaya visual retro dengan font Press Start 2P
 - 📱 **Responsive Design** - Menyesuaikan dengan berbagai ukuran layar
 - ⚡ **Performa Tinggi** - Dibangun dengan Vite untuk loading super cepat
@@ -94,8 +94,6 @@ yarn install
 ```bash
 npm run dev
 ```
-
-Aplikasi akan berjalan di **`http://localhost:5173`** (atau port lain jika 5173 sedang digunakan).
 
 ### 4️⃣ Build untuk Production
 
@@ -246,7 +244,7 @@ this.load.spritesheet('player', 'src/assets/player/YOUR_SPRITE.png', {
 
 Kontribusi dari komunitas sangat kami apresiasi! Berikut cara berkontribusi:
 
-### How to Contribute
+### Cara untuk berkontribusi
 
 1. **Fork** repository ini
 2. **Create branch** untuk fitur baru
@@ -255,7 +253,7 @@ Kontribusi dari komunitas sangat kami apresiasi! Berikut cara berkontribusi:
    ```
 3. **Commit** perubahan Anda
    ```bash
-   git commit -m 'Add: Amazing new feature'
+   git commit -m 'Menambahkan fitur baru : (sebutkan fiturnya)'
    ```
 4. **Push** ke branch
    ```bash
@@ -273,7 +271,7 @@ Kontribusi dari komunitas sangat kami apresiasi! Berikut cara berkontribusi:
 
 ## �️ Development Roadmap
 
-### 🚀 Planned Features
+### 🚀 Rencana Fitur Kedepannya
 
 - [ ] **Expanded Map** - Tambah lebih banyak lokasi kampus (ruang kelas, lab, kantin, dll)
 - [ ] **Mini-Map System** - Navigasi lebih mudah dengan mini-map di pojok layar
@@ -331,8 +329,8 @@ Special thanks to:
 
 ## 📞 Contact & Support
 
-- 📧 Email: dev@stis.ac.id
-- 🌐 Website: [https://stis.ac.id](https://stis.ac.id)
+- 📧 Email: goodpers888@gmail.com
+- 🌐 Website: 
 - 💬 Issues: [GitHub Issues](https://github.com/username/stismap/issues)
 
 ---
@@ -343,6 +341,6 @@ Special thanks to:
 
 **Made with 💻 and ☕ in Indonesia**
 
-© 2026 Politeknik Statistika STIS. All rights reserved.
+© 2026 Ananda Mizan Ali. All rights reserved.
 
 </div>
