@@ -1,4 +1,4 @@
-# 🎮 STIS-Explore
+# 🎮 STIS-Explore Hai sayang
 
 <div align="center">
 
