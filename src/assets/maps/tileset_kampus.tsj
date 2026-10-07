@@ -1,0 +1,567 @@
+{
+ "columns": 16,
+ "image": "../tilesets/tileset_kampus.png",
+ "imageheight": 108,
+ "imagewidth": 288,
+ "margin": 1,
+ "name": "tileset_kampus",
+ "spacing": 2,
+ "tilecount": 81,
+ "tileheight": 16,
+ "tilewidth": 16,
+ "tiles": [
+  {
+   "id": 0,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4f9a4a"
+    }
+   ]
+  },
+  {
+   "id": 1,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4f9a4a"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4f9a4a"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#c9c6bd"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#d4b48c"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#a5443d"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#b8b2a7"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8c8f96"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#7a5636"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#c9c6bd"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#c9c6bd"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#8fa1b8"
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e6dcc4"
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#2f8f5b"
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#2f8f5b"
+    }
+   ]
+  },
+  {
+   "id": 37,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e0b23a"
+    }
+   ]
+  },
+  {
+   "id": 38,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e0b23a"
+    }
+   ]
+  },
+  {
+   "id": 39,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e0b23a"
+    }
+   ]
+  },
+  {
+   "id": 40,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e0b23a"
+    }
+   ]
+  },
+  {
+   "id": 41,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#f4f1ea"
+    }
+   ]
+  },
+  {
+   "id": 42,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#f4f1ea"
+    }
+   ]
+  },
+  {
+   "id": 43,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#f4f1ea"
+    }
+   ]
+  },
+  {
+   "id": 44,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#9c5644"
+    }
+   ]
+  },
+  {
+   "id": 45,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#9c5644"
+    }
+   ]
+  },
+  {
+   "id": 46,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#9c5644"
+    }
+   ]
+  },
+  {
+   "id": 47,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#a8703f"
+    }
+   ]
+  },
+  {
+   "id": 48,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e8e4d8"
+    }
+   ]
+  },
+  {
+   "id": 49,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e8e4d8"
+    }
+   ]
+  },
+  {
+   "id": 50,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#e8e4d8"
+    }
+   ]
+  },
+  {
+   "id": 53,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#2a6e34"
+    }
+   ]
+  },
+  {
+   "id": 56,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#2a6e34"
+    }
+   ]
+  },
+  {
+   "id": 57,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#2a6e34"
+    }
+   ]
+  },
+  {
+   "id": 79,
+   "properties": [
+    {
+     "name": "minimap",
+     "type": "string",
+     "value": "#4a4d55"
+    }
+   ]
+  }
+ ],
+ "tiledversion": "1.10.2",
+ "type": "tileset",
+ "version": "1.10"
+}

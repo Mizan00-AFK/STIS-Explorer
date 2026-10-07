@@ -1,69 +1,80 @@
 <script setup lang="ts">
+// Dulu: modal "Profile" (portofolio). Sekarang: "About STIS" — tentang kampus & STISMAP.
+import { CAMPUS_INFO } from '../game/data/campus'
+import { SOURCES } from '../game/data/buildings'
 import { useUiStore } from '../stores/uiStore'
+import RpgModal from './RpgModal.vue'
 import RpgText from './RpgText.vue'
+
 const ui = useUiStore()
 </script>
 
 <template>
-  <div class="backdrop">
-    <div class="rpg-box">
-      <h2>PROFILE</h2>
+  <RpgModal title="About STIS" :subtitle="CAMPUS_INFO.name" icon="🎓" size="md" @close="ui.closeMenu()">
+    <div class="about">
+      <div class="about__intro rpg-panel">
+        <RpgText
+          text="Selamat datang di Politeknik Statistika STIS — kampus yang dikenal sebagai Kampus Otista. Jelajahi gedung, lantai, dan ruangannya lewat STISMAP!"
+        />
+      </div>
 
-      <RpgText
-        text="Selamat datang di Kampus STIS.
-Ini adalah area profil.
-Berisi cerita, data diri,
-dan perjalanan akademik."
-      />
+      <section>
+        <h3 class="rpg-label">Lokasi Kampus</h3>
+        <p>📍 {{ CAMPUS_INFO.address }}</p>
+        <p class="muted">
+          Kampus berada di tepi Jl. Otto Iskandardinata (Otista) dan Jl. Sensus Raya. Di dalam area kampus terdapat tiga
+          gedung utama dan Masjid Al Hasanah.
+        </p>
+      </section>
 
-      <button @click="ui.closeMenu()">CLOSE</button>
+      <section>
+        <h3 class="rpg-label">Informasi Resmi</h3>
+        <p>
+          Informasi resmi tentang program studi, penerimaan mahasiswa, dan pengumuman kampus tersedia di
+          <a :href="CAMPUS_INFO.website" target="_blank" rel="noopener noreferrer">stis.ac.id</a>.
+        </p>
+      </section>
+
+      <section>
+        <h3 class="rpg-label">Tentang STISMAP</h3>
+        <p class="muted">
+          STISMAP adalah peta kampus interaktif bergaya game RPG pixel. Tata letak peta mengikuti footprint dari
+          OpenStreetMap; informasi gedung diambil dari sumber publik; dan denah ruangan saat ini masih
+          <strong>data demo</strong> sampai denah resmi tersedia.
+        </p>
+        <ul class="sources">
+          <li v-for="source in Object.values(SOURCES)" :key="source.label">
+            <a :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.label }}</a>
+          </li>
+        </ul>
+      </section>
     </div>
-  </div>
+
+    <template #footer>
+      <button type="button" class="rpg-btn rpg-btn--primary" data-autofocus @click="ui.closeMenu()">Close</button>
+    </template>
+  </RpgModal>
 </template>
 
-
 <style scoped>
-.backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+.about {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
 }
-
-/* Kotak RPG */
-.rpg-box {
-  background: #f4f1de;
-  color: #1b1b1b;
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0 #000;
-  padding: 20px;
-  width: 360px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-  line-height: 1.8;
+.about__intro {
+  padding: 14px 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  border-color: var(--blue-500);
 }
-
-/* Judul */
-.rpg-box h2 {
-  margin-bottom: 12px;
-  text-align: center;
+.about section p {
+  margin: 6px 0 0;
+  line-height: 1.65;
 }
-
-/* Tombol RPG */
-.rpg-box button {
-  margin-top: 16px;
-  width: 100%;
-  padding: 10px;
-  background: #3a86ff;
-  color: white;
-  border: 3px solid #000;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.rpg-box button:hover {
-  background: #264bcc;
+.sources {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
 }
 </style>

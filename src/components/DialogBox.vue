@@ -1,195 +1,292 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+// Kotak dialog RPG: nama & potret karakter, teks bertahap, pilihan dialog, next & close.
+// Kontrol: SPACE / E / ENTER = lanjut, ↑ ↓ = pilih opsi, 1-9 = pilih cepat, ESC = tutup.
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useDialogStore } from '../stores/dialogStore'
+import { useUiStore } from '../stores/uiStore'
+import CharacterSprite from './CharacterSprite.vue'
+import RpgText from './RpgText.vue'
 
-const props = defineProps<{
-  npcName: string
-  messages: string[]
-  visible: boolean
-}>()
+const dialog = useDialogStore()
+const ui = useUiStore()
 
-const emit = defineEmits<{
-  close: []
-  next: []
-}>()
+const textRef = ref<InstanceType<typeof RpgText> | null>(null)
+const typingDone = ref(false)
+const activeChoice = ref(0)
+const choiceButtons = ref<HTMLButtonElement[]>([])
+const box = ref<HTMLElement | null>(null)
 
-const currentIndex = ref(0)
+const showChoices = computed(() => typingDone.value && dialog.choices.length > 0)
+const progress = computed(() => `${dialog.lineIndex + 1} / ${dialog.messages.length}`)
 
-const currentMessage = computed(() => {
-  return props.messages[currentIndex.value] || ''
-})
-
-const isLastMessage = computed(() => {
-  return currentIndex.value >= props.messages.length - 1
-})
-
-// Watch for visibility changes
-watch(() => props.visible, (newVal) => {
-  console.log('DialogBox: visible changed to', newVal)
-  console.log('DialogBox: npcName', props.npcName)
-  console.log('DialogBox: messages', props.messages)
-  if (newVal) {
-    currentIndex.value = 0
+watch(
+  () => [dialog.nodeId, dialog.lineIndex, dialog.currentLine],
+  () => {
+    typingDone.value = false
+    activeChoice.value = 0
   }
+)
+
+watch(showChoices, async (visible) => {
+  if (!visible) return
+  await nextTick()
+  choiceButtons.value[0]?.focus()
 })
 
-function handleNext() {
-  if (isLastMessage.value) {
-    currentIndex.value = 0
-    emit('close')
+function advance() {
+  // Klik / SPACE saat teks masih diketik -> tampilkan seluruh teks dulu.
+  if (textRef.value?.skip()) return
+  if (showChoices.value) {
+    const choice = dialog.choices[activeChoice.value]
+    if (choice) dialog.choose(choice)
+    return
+  }
+  dialog.next()
+}
+
+function onKeydown(event: KeyboardEvent) {
+  const key = event.key
+  if (key === 'Escape') {
+    dialog.hideDialog()
+  } else if (key === ' ' || key === 'Enter' || key.toLowerCase() === 'e') {
+    advance()
+  } else if (showChoices.value && (key === 'ArrowDown' || key === 's' || key === 'S')) {
+    activeChoice.value = (activeChoice.value + 1) % dialog.choices.length
+    choiceButtons.value[activeChoice.value]?.focus()
+  } else if (showChoices.value && (key === 'ArrowUp' || key === 'w' || key === 'W')) {
+    activeChoice.value = (activeChoice.value - 1 + dialog.choices.length) % dialog.choices.length
+    choiceButtons.value[activeChoice.value]?.focus()
+  } else if (showChoices.value && /^[1-9]$/.test(key)) {
+    const choice = dialog.choices[Number(key) - 1]
+    if (choice) dialog.choose(choice)
+  } else if (key === 'ArrowLeft' || key === 'Backspace') {
+    dialog.previous()
   } else {
-    currentIndex.value++
-    emit('next')
+    return
   }
+  // Tandai sudah ditangani agar Phaser tidak memproses tombol yang sama.
+  event.preventDefault()
+  event.stopPropagation()
 }
 
-function handleClose() {
-  currentIndex.value = 0
-  emit('close')
-}
-
-// Reset index when dialog opens
-function resetDialog() {
-  currentIndex.value = 0
-}
-
-defineExpose({
-  resetDialog
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown, true)
+  box.value?.focus()
 })
+onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown, true))
 </script>
 
 <template>
-  <Transition name="fade">
-    <div v-if="visible" class="dialog-overlay" @click="handleClose">
-      <div class="dialog-box" @click.stop>
-        <div class="dialog-header">
-          <h3>{{ npcName }}</h3>
-          <button class="close-btn" @click="handleClose">×</button>
-        </div>
-        <div class="dialog-content">
-          <p>{{ currentMessage }}</p>
-        </div>
-        <div class="dialog-footer">
-          <span class="dialog-hint">{{ currentIndex + 1 }} / {{ messages.length }}</span>
-          <button class="next-btn" @click="handleNext">
-            {{ isLastMessage ? 'Tutup' : 'Lanjut' }}
-          </button>
-        </div>
+  <div class="dialog-layer">
+    <section
+      ref="box"
+      class="rpg-panel dialog"
+      role="dialog"
+      aria-modal="false"
+      :aria-label="`Dialog dengan ${dialog.speaker.name}`"
+      tabindex="-1"
+      @click="advance"
+    >
+      <div class="dialog__portrait" aria-hidden="true">
+        <CharacterSprite
+          v-if="dialog.speaker.spriteRow !== undefined"
+          :row="dialog.speaker.spriteRow"
+          :tint="dialog.speaker.tint"
+          :scale="4"
+        />
+        <span v-else class="dialog__icon">{{ dialog.speaker.icon ?? '💬' }}</span>
       </div>
-    </div>
-  </Transition>
+
+      <div class="dialog__main">
+        <header class="dialog__header">
+          <h3 class="dialog__name pixel">{{ dialog.speaker.name }}</h3>
+          <span v-if="dialog.speaker.role" class="badge badge--neutral">{{ dialog.speaker.role }}</span>
+          <button class="icon-btn dialog__close" type="button" aria-label="Tutup dialog" @click.stop="dialog.hideDialog()">✕</button>
+        </header>
+
+        <RpgText ref="textRef" class="dialog__text" :text="dialog.currentLine" @done="typingDone = true" />
+
+        <ul v-if="showChoices" class="dialog__choices" role="list">
+          <li v-for="(choice, index) in dialog.choices" :key="choice.label">
+            <button
+              :ref="(el) => { if (el) choiceButtons[index] = el as HTMLButtonElement }"
+              type="button"
+              class="choice"
+              :class="{ 'choice--active': index === activeChoice }"
+              @click.stop="dialog.choose(choice)"
+              @focus="activeChoice = index"
+            >
+              <span class="choice__num" aria-hidden="true">{{ index + 1 }}</span>
+              {{ choice.label }}
+            </button>
+          </li>
+        </ul>
+
+        <footer class="dialog__footer">
+          <span class="rpg-label">{{ progress }}</span>
+          <span v-if="!showChoices" class="dialog__hint">
+            <template v-if="ui.isTouch">Ketuk untuk lanjut</template>
+            <template v-else>Tekan <kbd class="kbd">SPACE</kbd> untuk lanjut</template>
+          </span>
+          <span v-else class="dialog__hint">Pilih jawaban <template v-if="!ui.isTouch">(↑ ↓ / 1-{{ dialog.choices.length }})</template></span>
+        </footer>
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-.dialog-overlay {
+.dialog-layer {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 1000;
+  padding: 0 16px calc(20px + var(--safe-bottom));
+  pointer-events: none;
 }
 
-.dialog-box {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border: 3px solid #64748b;
-  border-radius: 12px;
-  padding: 0;
-  min-width: 400px;
-  max-width: 600px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  font-family: 'Courier New', monospace;
-}
-
-.dialog-header {
-  background: #0f172a;
-  border-bottom: 2px solid #64748b;
-  padding: 12px 20px;
+.dialog {
+  pointer-events: auto;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 9px 9px 0 0;
-}
-
-.dialog-header h3 {
-  margin: 0;
-  color: #fbbf24;
-  font-size: 18px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 28px;
+  gap: 16px;
+  width: min(820px, 100%);
+  padding: 16px;
   cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
+  animation: rpg-pop 0.18s ease-out;
+  border-color: var(--blue-500);
+}
+.dialog:focus {
+  outline: none;
+}
+
+.dialog__portrait {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  background: radial-gradient(circle at 50% 40%, var(--navy-600), var(--navy-900));
+  border: 3px solid var(--orange-500);
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 var(--panel-shadow);
+}
+.dialog__icon {
+  font-size: 40px;
+}
+
+.dialog__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog__header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
+  gap: 10px;
 }
-
-.close-btn:hover {
-  color: #f87171;
-}
-
-.dialog-content {
-  padding: 24px;
-  min-height: 100px;
-}
-
-.dialog-content p {
+.dialog__name {
   margin: 0;
-  color: #e2e8f0;
+  font-size: 12px;
+  color: var(--orange-400);
+  text-transform: uppercase;
+}
+.dialog__close {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+}
+
+.dialog__text {
+  min-height: 3.2em;
   font-size: 16px;
   line-height: 1.6;
+  color: var(--text);
 }
 
-.dialog-footer {
-  background: #0f172a;
-  border-top: 2px solid #64748b;
-  padding: 12px 20px;
+.dialog__choices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+.choice {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-radius: 0 0 9px 9px;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--navy-800);
+  border: 2px solid var(--panel-border);
+  border-radius: 4px;
+}
+.choice:hover,
+.choice--active {
+  border-color: var(--orange-500);
+  background: var(--navy-700);
+}
+.choice--active::after {
+  content: '◀';
+  margin-left: auto;
+  color: var(--orange-500);
+  font-size: 10px;
+}
+.choice__num {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--navy-950);
+  background: var(--orange-500);
+  border-radius: 3px;
 }
 
-.dialog-hint {
-  color: #94a3b8;
-  font-size: 12px;
+.dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.dialog__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.next-btn {
-  background: #3b82f6;
-  border: 2px solid #2563eb;
-  color: white;
-  padding: 8px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.next-btn:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+@media (max-width: 560px) {
+  .dialog-layer {
+    padding: 0 8px calc(8px + var(--safe-bottom));
+  }
+  .dialog {
+    gap: 10px;
+    padding: 12px;
+  }
+  .dialog__portrait {
+    width: 56px;
+    height: 56px;
+  }
+  .dialog__portrait :deep(.sprite) {
+    transform: scale(0.75);
+  }
+  .dialog__text {
+    font-size: 15px;
+  }
 }
 </style>
